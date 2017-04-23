@@ -1,8 +1,11 @@
 
 # coding: utf-8
 
-# # IR Project 
+# IR Project 
 # TweetQuake
+# <img src="img/TwitterMap.png" alt="Drawing" style="width: 475px;float:left; margin-top: 30px" title = "Twitter Map"/>
+# <img src="img/EarthQuakeMap.png" alt="Drawing" style="width: 475px;float:right" title = "Earthquake Map"/>
+# <img src="img/EarthQuakeTweet.png" alt="Drawing" style="width: 600px;" title = "Earthquake Tweet Frequency"/>
 
 # In[2]:
 
@@ -10,12 +13,17 @@
 import re
 import csv
 import nltk
+import operator
 # nltk.download()
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+from collections import defaultdict
 from IPython.core.interactiveshell import InteractiveShell
 InteractiveShell.ast_node_interactivity = "all"
 from nltk.stem.porter import PorterStemmer
+#get_ipython().magic(u'matplotlib inline')
+#notebook: %matplotlib inline
 
 def get_data(filename):
     df = pd.read_csv(filename)
@@ -34,29 +42,53 @@ porter_stemmer = PorterStemmer()
 
 # load nltk's English stopwords as variable called 'stopwords'
 stopwords = nltk.corpus.stopwords.words('english')
+wordmap = defaultdict(int)
 
 def Stopword(tweet):
-    nostop = []
+    nostop = str()
     for word in tweet:
         word = word.decode('utf-8')
-        if word not in stopwords: nostop.append(word)
+        if word not in stopwords:
+            nostop += " " + word
     return nostop
 
 def remove_stopword (X):
-    X['no-stopword'] = X.Tweet_Text.str.split().apply(Stopword)
+    X['nostopword'] = X.Tweet_Text.str.split().apply(Stopword)
     return X
 
 def Porter_Stem(tweet):
-    stemmed_word = []
+    stemmed_word = str()
     for word in tweet:
-        word = word.decode('utf-8')
-        stemmed_word.append(porter_stemmer.stem(word))
+        #word = word.decode('utf-8')
+        stemmed_word += " " + (porter_stemmer.stem(word))
     return stemmed_word
-            
+
 def stemming (X):
-    X['stem'] = X.Tweet_Text.str.split().apply(Porter_Stem)
+    X['stem'] = X.nostopword.str.split().apply(Porter_Stem)
     return X
-    
+
+def update_wordmap(tweet):
+    #update wordmap with frequency of words in tweet
+    for word in tweet:
+        wordmap[word] += 1
+
+def term_frequency_plot(X):
+    #Plot a graph for term frequency in tweets
+    X.stem.str.split().apply(update_wordmap)
+    sorted_x = sorted(wordmap.items(), key=operator.itemgetter(1), reverse=True)
+    objects = list()
+    freq = list()
+    for i in range(10):
+        objects.append(sorted_x[i][0])
+        freq.append(sorted_x[i][1])
+
+    x_pos = np.arange(len(objects))
+    plt.barh(x_pos, freq, align='center', alpha=0.5)
+    plt.xlabel("Frequency")
+    plt.yticks(x_pos, objects)
+    plt.title('Term Frequency usage')
+    plt.show()
+
 # Feature Extraction
 # X['count'] = X.Tweet_Text.str.split(' ').apply(len)#.value_counts()
 # X['has_earthquake'] = X.Tweet_Text.str.contains('earthquake').apply(int)
@@ -99,16 +131,17 @@ def find_before_after_query_word(val):
             else:
                 return val[i-1]+', '+val[i+1]
     return ', '
-    
+
 # X['position'] = X.Tweet_Text.str.split().apply(find_position)
 # X['before_query1'] = 0
 # X.before_query1[X.position > 0] = X.position - 1
 X = remove_stopword(X)
 X = stemming (X)
+term_frequency_plot(X)
 X = Feature_extraction_A(X)
 X = Feature_extraction_B(X)
 X = Feature_extraction_C(X)
-X
+print X
 
 
 
