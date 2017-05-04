@@ -1,3 +1,0 @@
-Alfredo Cobo, Denis Parra, and Jaime Navón. 2015. Identifying Relevant Messages in a Twitter-based Citizen Channel for Natural Disaster Situations. In Proceedings of the Social Web for Disaster Management (SWDM'15) Workshop. ----- For dataset
-
-http://dl.acm.org/citation.cfm?id=2741719 - Identifying Relevant Messages in a Twitter-based Citizen Channel for Natural Disaster Situations
