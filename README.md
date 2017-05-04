@@ -13,5 +13,5 @@ pip install -U scikit-learn
 Tweepy Installation:
 pip install tweepy
 
-## Link to youtube video: 
+## Link to youtube video: https://youtu.be/t4YAlAzlseE
 	
