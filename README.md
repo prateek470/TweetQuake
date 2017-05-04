@@ -26,5 +26,6 @@ For evaluating our classifier, we plan to report the evaluation metrics - Precis
 
 ## Dataset:
 We are planning to use tweets provided from http://crisislex.org/data-collections.html for earthquake related tweet information. 
-Link to youtube video: 
+
+## Link to youtube video: 
 	
